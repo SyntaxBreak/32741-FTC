@@ -5,11 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name = "Mecanum Drive", group = "Linear Opmode")
-public class MainControl extends LinearOpMode {
+public class RobotWithFeeder extends LinearOpMode {
     private DcMotor BLWheel; // back left
     private DcMotor FLWheel; // front left
     private DcMotor FRWheel; // front right
     private DcMotor BRWheel; // back right
+    private DcMotor ShooterMotor;
 
     @Override
     public void runOpMode() {
@@ -18,16 +19,14 @@ public class MainControl extends LinearOpMode {
         FLWheel = hardwareMap.get(DcMotor.class, "FLWheel");
         FRWheel = hardwareMap.get(DcMotor.class, "FRWheel");
         BRWheel = hardwareMap.get(DcMotor.class, "BRWheel");
-        LFeeder = hardwareMap.get(DcMotor.class, "LFeeder");
-        RFeeder = hardwareMap.get(DcMotor.class, "RFeeder");
-        
+        ShooterMotor = hardwareMap.get(DcMotor.class, "ShooterMotor");
+
         // mecanum drive / reverse test
         BLWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         FLWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         FRWheel.setDirection(DcMotorSimple.Direction.REVERSE);
         BRWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        LFeeder.setDirection(DcMotorSimple.Direction.FORWARD);
-        RFeeder.setDirection(DcMotorSimple.Direction.REVERSE);
+        ShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized - Waiting for start");
         telemetry.update();
@@ -60,8 +59,7 @@ public class MainControl extends LinearOpMode {
                 backRightPower /= maxPower;
             }
 
-            LFeeder.setPower(gamepad1.left_bumper);
-            RFeeder.setPower(gamepad1.left_bumper);
+            ShooterMotor.setPower(gamepad1.right_bumper ? 1:0); // Spin the shooter if rb is pressed
 
             // Apply power to motors
             FLWheel.setPower(frontLeftPower);
@@ -77,8 +75,7 @@ public class MainControl extends LinearOpMode {
             telemetry.addData("BL Wheel Power", BLWheel.getPower());
             telemetry.addData("FR Wheel Power", FRWheel.getPower());
             telemetry.addData("BR Wheel Power", BRWheel.getPower());
-            telemetry.addData("L Feeder Power", LFeeder.getPower());
-            telemetry.addData("R Feeder Power", RFeeder.getPower());
+            telemetry.addData("Shooter Power", ShooterMotor.getPower());
             telemetry.update();
         }
     }
